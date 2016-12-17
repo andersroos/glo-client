@@ -10,7 +10,7 @@ Javascrip client for Glo servers.
 
 Example: `file:///tmp/glo.html?localhost:22200&localhost:22201`
 
-If port is omitted it will scan ports from 22000 to 22100 and show all
+If port is omitted it will scan ports from 22200 to 22240 and show all
 servers it finds.
 
 Example: `file:///tmp/glo.html?localhost`
