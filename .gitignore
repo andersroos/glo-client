@@ -1,0 +1,5 @@
+*.gch
+*.o
+.idea
+build
+node_modules
