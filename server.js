@@ -13,30 +13,14 @@ export let State = {
 };
 
 
-function convertValue(tag, value) {
-    switch (tag) {
-        case 'count':
-        case 'last-duration-us':
-        case 'total-duration-us':
-        case 'max-us':
-            return parseInt(value);
-        case 'current':
-            return parseFloat(value);
-        case 'last':
-            return value;
-    }
-    return null;
-}
-
-
 export class Item {
     
     constructor(timestamp, item) {
-        let [path, tag] = item.key.split(":", 2);
-        this.key = item.key
+        let [path, tags] = item.key.split(":", 2);
+        this.key = item.key;
         this.path = path.split("/");
-        this.tag = tag;
-        this.value = convertValue(tag, item.value);
+        this.tags = tags.split("-");
+        this.value = item.value;
         this.desc = item.desc;
         this.lvl = item.lvl;
         this.timestamp = timestamp;
@@ -44,12 +28,9 @@ export class Item {
     }
 
     update(timestamp, value) {
-        value = convertValue(this.tag, value);
-        
-        switch (this.tag) {
-            case 'count':
-                this.computed = sprintf("%f/s", Math.round((value - this.value) * 1e6 / (timestamp - this.timestamp)));
-                break;
+
+        if (this.tags.indexOf('count') != -1) {
+            this.computed = sprintf("%f/s", Math.round((value - this.value) / (timestamp - this.timestamp)));
         }
         this.value = value;
         this.timestamp = timestamp;
@@ -92,11 +73,11 @@ export class ServerBase {
         this.failCount = 0;
         this.state = State.GOOD;
         
-        if (res.version !== 2) {
-            throw new Error(sprintf("%s exepcted version 2, was %s", this.spec, res.version))
+        if (res.version !== 4) {
+            throw new Error(sprintf("%s exepcted version 4, was %s", this.spec, res.version))
         }
         
-        res.data.forEach((item) => {
+        res.items.forEach((item) => {
             let existing = this.items[item.key];
             if (existing) {
                 existing.update(res.timestamp, item.value);
@@ -134,13 +115,13 @@ export class FakeServer extends ServerBase {
                     key: "/localhost/gloserver/request:count",
                     value: 0,
                     desc: "Number of requests to the server.",
-                    lvl: 0
+                    level: 0
                 },
                 {
                     key: "/localhost/gloserver/cache/size:current",
                     value: 100,
                     desc: "Size of the cache.",
-                    lvl: 0
+                    level: 0
                 }
             ]
         };
