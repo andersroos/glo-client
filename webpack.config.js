@@ -1,6 +1,5 @@
-var webpack = require("webpack");
-var path = require("path");
-
+const webpack = require("webpack");
+const path = require("path");
 
 module.exports = {
     entry: {
@@ -11,24 +10,31 @@ module.exports = {
         filename: "glo.js"
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                loader: "babel",
-                query: {
-                    presets: ["es2016", "es2015"],
-                    plugins: ["transform-react-jsx"],
-                }
+                use: ['babel-loader'],
             },
             {
                 test: /\.scss$/,
-                loaders: ["style", "css", "sass"],
+                use: [
+                    {
+                        loader: "style-loader",
+                    },
+                    {
+                        loader: "css-loader",
+                    },
+                    {
+                        loader: "sass-loader",
+                    }
+                ]
             },
-        ]
+        ],
     },
+    mode: "development",
+    devtool: "inline-source-map",
     resolve: {
-        extensions: ['', '.js'],
+        extensions: ['*', '.js', '.jsx']
     },
-    devtool: 'source-map',
 };

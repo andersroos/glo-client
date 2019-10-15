@@ -109,8 +109,8 @@ export class FakeServer extends ServerBase {
         super(app, "fake", port || 22200);
         
         this.res = {
-            version: 2,
-            data: [
+            version: 4,
+            items: [
                 {
                     key: "/localhost/gloserver/request:count",
                     value: 0,
@@ -129,8 +129,8 @@ export class FakeServer extends ServerBase {
     
     update() {
         this.res.timestamp = new Date().getTime() * 1000;
-        this.res.data[0].value += Math.round(2 + Math.random() * 4);
-        this.res.data[1].value = Math.round(100 + Math.random() * 20);
+        this.res.items[0].value += Math.round(2 + Math.random() * 4);
+        this.res.items[1].value = Math.round(100 + Math.random() * 20);
         if (Math.random() > 0.5) {
             setTimeout(() => this.success(this.res), 100);
         }
